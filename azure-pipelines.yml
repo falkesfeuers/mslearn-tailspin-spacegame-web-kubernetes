@@ -53,7 +53,7 @@ stages:
     - group: Release
     steps:
     - download: current
-    artifact: manifests
+      artifact: manifests
     - task: AzureWebAppContainer@1
       inputs:
        appName: $(WebAppName)
