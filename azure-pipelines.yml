@@ -67,6 +67,7 @@ stages:
         secretName: $(imagePullSecret)
         dockerRegistryEndpoint: 'Container Registry Connection'
         azureSubscriptionConnection: 'Kubernetes Cluster Connection'
+        azureSubscription: '06c37670-8a45-4b9c-a896-428927ce91d1'
         azureResourceGroup: 'RG-LAB-AKS'
         kubernetesCluster: 'az400m16aks2200410873'
         namespace: 'spacegame'
@@ -76,6 +77,7 @@ stages:
         action: deploy
         connectionType: azureResourceManager
         azureSubscriptionConnection: 'Kubernetes Cluster Connection'
+        azureSubscription: '06c37670-8a45-4b9c-a896-428927ce91d1'
         azureResourceGroup: 'RG-LAB-AKS'
         kubernetesCluster: 'az400m16aks2200410873'
         namespace: 'spacegame'
