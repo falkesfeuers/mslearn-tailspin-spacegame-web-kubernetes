@@ -84,7 +84,7 @@ stages:
   - task: KubernetesManifest@1
     displayName: Deploy to Kubernetes cluster
     inputs:
-    action: deploy
+      action: deploy
       connectionType: azureResourceManager
       azureSubscriptionConnection: 'Kubernetes Cluster Connection'
       azureResourceGroup: 'RG-LAB-AKS'
