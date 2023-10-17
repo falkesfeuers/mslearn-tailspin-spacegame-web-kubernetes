@@ -43,29 +43,29 @@ stages:
           steps:
           - download: current
             artifact: manifests
-    - task: AzureWebAppContainer@1
-      inputs:
-        appName: $(WebAppName)
-        azureSubscription: 'Resource Manager - Tailspin - Space Game'
-        imageName: $(RegistryName)/$(webRepository):$(build.buildId)
-    - task: Docker@2
-      displayName: 'Build and push the web image to container registry'
-      inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(webRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
+  - task: AzureWebAppContainer@1
+    inputs:
+       appName: $(WebAppName)
+       azureSubscription: 'Resource Manager - Tailspin - Space Game'
+       imageName: $(RegistryName)/$(webRepository):$(build.buildId)
+  - task: Docker@2
+    displayName: 'Build and push the web image to container registry'
+    inputs:
+      command: buildAndPush
+      buildContext: $(Build.Repository.LocalPath)
+      repository: $(webRepository)
+      dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
+      containerRegistry: 'Container Registry Connection'
       tags: |
         $(tag)
-    - task: Docker@2
-      displayName: 'Build and push the leaderboard image to container registry'
-      inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(leaderboardRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
+  - task: Docker@2
+    displayName: 'Build and push the leaderboard image to container registry'
+    inputs:
+      command: buildAndPush
+      buildContext: $(Build.Repository.LocalPath)
+      repository: $(leaderboardRepository)
+      dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile'
+      containerRegistry: 'Container Registry Connection'
       tags: |
             $(tag)
     - publish: '$(Build.SourcesDirectory)/manifests'
@@ -81,9 +81,9 @@ stages:
         azureResourceGroup: 'RG-LAB-AKS'
         kubernetesCluster: 'az400m16aks2200410873'
         namespace: 'spacegame'
-    - task: KubernetesManifest@1
-      displayName: Deploy to Kubernetes cluster
-      inputs:
+  - task: KubernetesManifest@1
+    displayName: Deploy to Kubernetes cluster
+    inputs:
       action: deploy
         connectionType: azureResourceManager
         azureSubscriptionConnection: 'Kubernetes Cluster Connection'
