@@ -42,9 +42,9 @@ stages:
                   artifact: manifests
   - task: AzureWebAppContainer@1
     inputs:
-      appName: $(WebAppName)
-      azureSubscription: Resource Manager - Tailspin - Space Game
-      imageName: $(RegistryName)/$(webRepository):$(build.buildId)
+    appName: $(WebAppName)
+    azureSubscription: Resource Manager - Tailspin - Space Game
+    imageName: $(RegistryName)/$(webRepository):$(build.buildId)
   - task: Docker@2
     displayName: Build and push the web image to container registry
     inputs:
