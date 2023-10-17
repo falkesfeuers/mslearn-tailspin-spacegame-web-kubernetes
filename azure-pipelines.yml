@@ -68,11 +68,11 @@ stages:
       containerRegistry: 'Container Registry Connection'
       tags: |
             $(tag)
-    - publish: '$(Build.SourcesDirectory)/manifests'
+  - publish: '$(Build.SourcesDirectory)/manifests'
       artifact: manifests
-    - task: KubernetesManifest@1
-      displayName: Create imagePullSecret
-      inputs:
+  - task: KubernetesManifest@1
+    displayName: Create imagePullSecret
+    inputs:
         action: createSecret
         connectionType: azureResourceManager
         secretName: $(imagePullSecret)
