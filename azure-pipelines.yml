@@ -85,14 +85,14 @@ stages:
     displayName: Deploy to Kubernetes cluster
     inputs:
       action: deploy
-        connectionType: azureResourceManager
-        azureSubscriptionConnection: 'Kubernetes Cluster Connection'
-        azureResourceGroup: 'RG-LAB-AKS'
-        kubernetesCluster: 'az400m16aks2200410873'
-        namespace: 'spacegame'
-        manifests: |
-                    $(Pipeline.Workspace)/manifests/deployment.yml
-                    $(Pipeline.Workspace)/manifests/service.yml
+            connectionType: azureResourceManager
+            azureSubscriptionConnection: 'Kubernetes Cluster Connection'
+            azureResourceGroup: 'RG-LAB-AKS'
+            kubernetesCluster: 'az400m16aks2200410873'
+            namespace: 'spacegame'
+            manifests: |
+                        $(Pipeline.Workspace)/manifests/deployment.yml
+                        $(Pipeline.Workspace)/manifests/service.yml
         imagePullSecrets: |
                   $(imagePullSecret)
         containers: |
