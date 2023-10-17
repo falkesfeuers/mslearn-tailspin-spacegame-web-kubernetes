@@ -43,8 +43,8 @@ stages:
           steps:
           - download: current
             artifact: manifests
-- task: AzureWebAppContainer@1
-  inputs:
+  - task: AzureWebAppContainer@1
+    inputs:
         appName: $(WebAppName)
         azureSubscription: 'Resource Manager - Tailspin - Space Game'
         imageName: $(RegistryName)/$(webRepository):$(build.buildId)
