@@ -69,7 +69,7 @@ stages:
   tags: |
         $(tag)
 - publish: '$(Build.SourcesDirectory)/manifests'
-      artifact: manifests
+  artifact: manifests
 - task: KubernetesManifest@1
   displayName: Create imagePullSecret
   inputs:
