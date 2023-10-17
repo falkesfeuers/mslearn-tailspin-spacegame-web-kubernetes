@@ -1,73 +1,71 @@
 trigger:
-- 'main'
-
+  - main
 variables:
-  buildConfiguration: 'Release'
-  webRepository: 'web'
-  tag: '$(Build.BuildId)'
-
+  buildConfiguration: Release
+  webRepository: web
+  tag: $(Build.BuildId)
 stages:
-- stage: 'Build'
-  displayName: 'Build and push'
-  jobs:  
-  - job: 'Build'
-    displayName: 'Build job'
-    pool:
-      vmImage: 'ubuntu-20.04'
-    steps:
-    - task: Docker@2
-      displayName: 'Build and push the image to container registry'
-      inputs:
-        command: buildAndPush
-        buildContext: $(Build.Repository.LocalPath)
-        repository: $(webRepository)
-        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
-        containerRegistry: 'Container Registry Connection'
-        tags: |
-          $(tag)
-- stage: 'Deploy'
-  displayName: 'Deploy the containers'
-  dependsOn: Build
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    pool:
-      vmImage: 'ubuntu-20.04'
-    environment: 'Dev'
-    variables:
-    - group: Release
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: manifests
-  - task: AzureWebAppContainer@1
-    inputs:
-      appName: $(WebAppName)
-      azureSubscription: 'Resource Manager - Tailspin - Space Game'
-      imageName: $(RegistryName)/$(webRepository):$(build.buildId)
+  - stage: Build
+    displayName: Build and push
+    jobs:
+      - job: Build
+        displayName: Build job
+        pool:
+          vmImage: ubuntu-20.04
+        steps:
+          - task: Docker@2
+            displayName: Build and push the image to container registry
+            inputs:
+              command: buildAndPush
+              buildContext: $(Build.Repository.LocalPath)
+              repository: $(webRepository)
+              dockerfile: $(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile
+              containerRegistry: Container Registry Connection
+              tags: |
+                $(tag)
+  - stage: Deploy
+    displayName: Deploy the containers
+    dependsOn: Build
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy
+        pool:
+          vmImage: ubuntu-20.04
+        environment: Dev
+        variables:
+          - group: Release
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: manifests
+      - task: AzureWebAppContainer@1
+        inputs:
+          appName: $(WebAppName)
+          azureSubscription: Resource Manager - Tailspin - Space Game
+          imageName: $(RegistryName)/$(webRepository):$(build.buildId)
   - task: Docker@2
-    displayName: 'Build and push the web image to container registry'
+    displayName: Build and push the web image to container registry
     inputs:
       command: buildAndPush
       buildContext: $(Build.Repository.LocalPath)
       repository: $(webRepository)
-      dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
-      containerRegistry: 'Container Registry Connection'
+      dockerfile: $(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile
+      containerRegistry: Container Registry Connection
       tags: |
         $(tag)
   - task: Docker@2
-    displayName: 'Build and push the leaderboard image to container registry'
+    displayName: Build and push the leaderboard image to container registry
     inputs:
       command: buildAndPush
       buildContext: $(Build.Repository.LocalPath)
       repository: $(leaderboardRepository)
-      dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile'
-      containerRegistry: 'Container Registry Connection'
+      dockerfile: $(Build.SourcesDirectory)/Tailspin.SpaceGame.LeaderboardContainer/Dockerfile
+      containerRegistry: Container Registry Connection
       tags: |
         $(tag)
-  - publish: '$(Build.SourcesDirectory)/manifests'
+  - publish: $(Build.SourcesDirectory)/manifests
     artifact: manifests
   - task: KubernetesManifest@1
     displayName: Create imagePullSecret
@@ -75,20 +73,20 @@ stages:
       action: createSecret
       connectionType: azureResourceManager
       secretName: $(imagePullSecret)
-      dockerRegistryEndpoint: 'Container Registry Connection'
-      azureSubscriptionConnection: 'Kubernetes Cluster Connection'
-      azureResourceGroup: 'RG-LAB-AKS'
-      kubernetesCluster: 'az400m16aks2200410873'
-      namespace: 'spacegame'
+      dockerRegistryEndpoint: Container Registry Connection
+      azureSubscriptionConnection: Kubernetes Cluster Connection
+      azureResourceGroup: RG-LAB-AKS
+      kubernetesCluster: az400m16aks2200410873
+      namespace: spacegame
   - task: KubernetesManifest@1
     displayName: Deploy to Kubernetes cluster
     inputs:
       action: deploy
       connectionType: azureResourceManager
-      azureSubscriptionConnection: 'Kubernetes Cluster Connection'
-      azureResourceGroup: 'RG-LAB-AKS'
-      kubernetesCluster: 'az400m16aks2200410873'
-      namespace: 'spacegame'
+      azureSubscriptionConnection: Kubernetes Cluster Connection
+      azureResourceGroup: RG-LAB-AKS
+      kubernetesCluster: az400m16aks2200410873
+      namespace: spacegame
       manifests: |
         $(Pipeline.Workspace)/manifests/deployment.yml
         $(Pipeline.Workspace)/manifests/service.yml
